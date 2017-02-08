@@ -116,7 +116,24 @@ open class WebAppLocalServer: METPlugin, AssetBundleManagerDelegate {
     NotificationCenter.default.addObserver(self, selector: #selector(WebAppLocalServer.pageDidLoad), name: NSNotification.Name.CDVPageDidLoad, object: webView)
 
     NotificationCenter.default.addObserver(self, selector: #selector(WebAppLocalServer.applicationDidEnterBackground), name: NSNotification.Name.UIApplicationDidEnterBackground, object: nil)
+  
+    NotificationCenter.default.addObserver(self, selector: #selector(WebAppLocalServer.applicationWillEnterForeground), name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
   }
+  
+  func applicationWillEnterForeground() {
+        
+        localServer.stop();
+        
+        localServer = nil;
+    
+        do {
+            try startLocalServer()           
+        } catch {            
+            NSLog("Could not start local server: \(error)")
+            return
+        }
+        
+    }
 
   func initializeAssetBundles() {
     assetBundleManager = nil;
